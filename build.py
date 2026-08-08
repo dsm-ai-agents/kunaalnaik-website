@@ -31,6 +31,7 @@ NAV = [
     ("Consulting", "/ai-automation-consulting/"),
     ("Claude Cowork", "/claude-cowork-training/"),
     ("Hermes Agent", "/hermes-agent-training/"),
+    ("Case Studies", "/case-studies/"),
     ("About", "/about-kunaal-naik/"),
 ]
 

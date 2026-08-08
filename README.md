@@ -35,6 +35,6 @@ Open http://127.0.0.1:8765/.
 
 Vercel serves the generated static files directly. No framework, package manager, runtime, CMS, database, or client-side rendering is required.
 
-Production URL: pending first deployment.
+Production URL: https://kunaalnaik-website.vercel.app/
 
 Custom domain: `kunaalnaik.com` should be switched only after the Vercel preview is approved against the current live site.

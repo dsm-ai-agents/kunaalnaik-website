@@ -97,12 +97,12 @@ python3 -m http.server 8765
 
 ## Phase 6 — Vercel production deployment
 
-- [ ] Confirm Vercel CLI authentication and target scope.
-- [ ] Link the local directory to a descriptive Vercel project named `kunaalnaik-website`.
-- [ ] Deploy to production.
-- [ ] Verify the production URL, every core route, sitemap, robots file, metadata, and browser console.
-- [ ] Record the Vercel deployment URL in `README.md`.
-- [ ] Leave the custom-domain switch for `kunaalnaik.com` until the new deployment is approved against the current live site.
+- [x] Confirm Vercel CLI authentication and target scope.
+- [x] Link the local directory to a descriptive Vercel project named `kunaalnaik-website`.
+- [x] Deploy to production.
+- [x] Verify the production URL, every core route, sitemap, robots file, metadata, and browser console.
+- [x] Record the Vercel deployment URL in `README.md`.
+- [x] Leave the custom-domain switch for `kunaalnaik.com` until the new deployment is approved against the current live site.
 
 **Exit check:** Production returns HTTP 200 on every core route, real HTTP 404 for a fake route, and the rendered pages are visually usable on desktop and mobile.
 

@@ -80,7 +80,7 @@ def page(title, description, path, body, kind="WebPage"):
 <title>{esc(title)}</title><meta name="description" content="{esc(description)}"><link rel="canonical" href="{canonical}">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Kunaal Naik"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{canonical}"><meta property="og:image" content="{SITE}/assets/og-kunaal-naik.jpg">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(description)}"><meta name="twitter:image" content="{SITE}/assets/og-kunaal-naik.jpg">
-<link rel="stylesheet" href="/assets/site.css"><script type="application/ld+json">{data}</script></head><body>{header()}<main id="main">{body}</main>{footer()}<script src="/assets/site.js" defer></script></body></html>'''
+<link rel="stylesheet" href="/assets/site.css"><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><script type="application/ld+json">{data}</script></head><body>{header()}<main id="main">{body}</main>{footer()}<script src="/assets/site.js" defer></script></body></html>'''
 
 
 def page_hero(kicker, title, lede, current):

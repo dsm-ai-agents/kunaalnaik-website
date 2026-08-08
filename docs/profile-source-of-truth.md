@@ -35,6 +35,24 @@ Kunaal Naik is the founder of Data Science Masterminds, an AI automation coach, 
 - Training plus implementation, with explicit approval and verification controls
 - Executive, team, and operator-level formats
 
+## Approved mission and principles
+
+**Vision:** Make AI accessible, practical, and useful for professionals, founders, and business teams regardless of technical background.
+
+**Mission:** Train and equip people to understand, build, supervise, and improve AI workflows that solve real business problems.
+
+**Public operating principles:**
+- Start with the business problem, decision, user, and metric—not the tool.
+- Prefer practical implementation over theoretical perfection.
+- Use hands-on work and leave behind a workflow, artifact, decision, or implementation plan.
+- Make AI accessible to non-technical people without removing verification or governance.
+- Keep sensitive data, consequential decisions, approvals, and published outcomes under human accountability.
+- Transfer capability and ownership rather than creating permanent black-box dependency.
+- Use transparent, relevant, permission-based customer communication.
+- Treat monetization as an ethical application of useful capability, never as a guaranteed income outcome.
+
+The detailed approved extract is maintained in `docs/profile-content-extract.md`.
+
 ## Claims excluded until evidence is collected
 
 Do not publish these as facts in the base release:
@@ -50,6 +68,12 @@ Do not publish these as facts in the base release:
 - 250K/125K/85K/200K video views
 - Named testimonials currently shown on the old homepage
 - A stale cohort start date
+- Promotion timelines, number of direct reports, and employer-history details
+- Salary, external-income, or non-employment-income comparisons
+- ₹20 lakh self-investment
+- Search ranking in ChatGPT, Grok, Gemini, Google, or other answer engines
+- `$5K–$25K/month`, first-client, or 90-day income/career promises
+- Agentic Founder Program, AI Agent Accelerator, or Cloud Co-Work details until current names, URLs, formats, pricing, and availability are confirmed
 
 These may be restored only with a link, approved testimonial, contract-safe case evidence, event page, certificate, recording, or other defensible source.
 

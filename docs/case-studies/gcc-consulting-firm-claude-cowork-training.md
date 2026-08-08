@@ -17,7 +17,7 @@ It is not `cloud.md`. All public references must use `CLAUDE.md`.
 
 ## Public framing
 
-This material describes hands-on training demonstrations and workflow prototypes for an anonymized GCC consulting firm. It must not be presented as a production deployment, client testimonial, independently audited result, or guaranteed outcome unless supporting evidence and publication permission are added.
+This material describes hands-on training demonstrations and workflow prototypes for a GCC consulting firm. It must not be presented as a production deployment, client testimonial, independently audited result, or guaranteed outcome unless supporting evidence and publication permission are added.
 
 Safe public description:
 

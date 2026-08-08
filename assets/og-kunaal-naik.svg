@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0d1b2a"/>
+  <g opacity=".08" stroke="#fff"><path d="M0 54h1200M0 108h1200M0 162h1200M0 216h1200M0 270h1200M0 324h1200M0 378h1200M0 432h1200M0 486h1200M0 540h1200M54 0v630M108 0v630M162 0v630M216 0v630M270 0v630M324 0v630M378 0v630M432 0v630M486 0v630M540 0v630M594 0v630"/></g>
+  <rect x="64" y="72" width="10" height="88" fill="#f15a35"/>
+  <text x="104" y="105" fill="#c6f36b" font-family="Arial,sans-serif" font-size="21" font-weight="700" letter-spacing="3">KUNAAL NAIK</text>
+  <text x="104" y="210" fill="#fffdf8" font-family="Georgia,serif" font-size="52" font-weight="700">Corporate AI training.</text>
+  <text x="104" y="282" fill="#fffdf8" font-family="Georgia,serif" font-size="52" font-weight="700">Practical AI adoption.</text>
+  <text x="104" y="374" fill="#b9e5ef" font-family="Arial,sans-serif" font-size="26">Claude Cowork · Hermes Agent · AI workflows</text>
+  <text x="104" y="516" fill="#fffdf8" font-family="Arial,sans-serif" font-size="22">kunaalnaik.com</text>
+  <rect x="888" y="84" width="248" height="474" fill="#f15a35"/>
+  <defs><clipPath id="p"><rect x="858" y="54" width="248" height="474"/></clipPath></defs>
+  <image href="kunaal-naik.webp" x="745" y="54" width="474" height="474" clip-path="url(#p)" preserveAspectRatio="xMidYMid slice"/>
+</svg>

@@ -1,0 +1,9 @@
+.git/
+.vercel/
+docs/
+IMPLEMENTATION_TASKS.md
+README.md
+build.py
+check_site.py
+assets/kunaal-naik-source.png
+assets/og-kunaal-naik.svg

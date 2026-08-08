@@ -86,12 +86,12 @@ python3 -m http.server 8765
 
 ## Phase 5 — GitHub
 
-- [ ] Initialize Git with `main` as the default branch.
-- [ ] Add `.gitignore` and `README.md`.
-- [ ] Commit the verified base website.
-- [ ] Authenticate GitHub CLI if required.
-- [ ] Create the public repository `kunaalnaik-website`.
-- [ ] Push `main` and verify the remote files/commit.
+- [x] Initialize Git with `main` as the default branch.
+- [x] Add `.gitignore` and `README.md`.
+- [x] Commit the verified base website.
+- [x] Authenticate GitHub CLI if required.
+- [x] Create the public repository `kunaalnaik-website`.
+- [x] Push `main` and verify the remote files/commit.
 
 **Exit check:** The GitHub repository URL loads publicly and its HEAD commit matches local `main`.
 

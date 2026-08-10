@@ -11,39 +11,20 @@ ROOT = Path(__file__).parent
 SITE = "https://kunaalnaik.com"
 EMAIL = "me@kunaalnaik.com"
 
-# Leadsy / vtag visitor-identification pixel. Third-party script: it resolves
-# anonymous visitors to company/contact data, so the privacy page must say so.
+# Leadsy / vtag visitor-identification pixel + EU consent gate.
+#
+# This MUST stay an external file reference, not an inline <script>. vercel.json
+# sets Content-Security-Policy script-src 'self' with no 'unsafe-inline', so an
+# inline gate is silently blocked and the tag never loads. That happened once
+# already; test_entity_and_faq.py now asserts the external form.
+#
+# The gate itself lives in assets/site.js (region check, consent, injection).
 VISITOR_TAG_SRC = "https://r2.leadsy.ai/tag.js"
 VISITOR_TAG_PID = "pbfdcrcFAjyErfW8"
 VISITOR_TAG_VERSION = "062024"
-
-# Consent gate. EU/UK/EEA/Swiss visitors get the script deferred until they
-# accept; everyone else loads it immediately with no banner.
-#
-# ponytail: region detected from the browser's IANA timezone, not IP geo. A
-# European on a US VPN is misclassified (shown no banner) and a traveller in
-# Europe sees one unnecessarily. That is the accepted ceiling for a static site
-# with zero backend. Upgrade path if EU volume grows: read Vercel's
-# x-vercel-ip-country header in middleware and render the decision server-side.
-VISITOR_TAG = f'''<script>(function(){{
-var EU=/^(Europe\\/|Atlantic\\/(Azores|Madeira|Canary|Faeroe|Reykjavik)$|Arctic\\/Longyearbyen$)/;
-var KEY="vtag-consent";
-function load(){{var s=document.createElement("script");s.id="vtag-ai-js";s.async=true;
-s.src="{VISITOR_TAG_SRC}";s.setAttribute("data-pid","{VISITOR_TAG_PID}");
-s.setAttribute("data-version","{VISITOR_TAG_VERSION}");document.head.appendChild(s);}}
-var tz="";try{{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||"";}}catch(e){{}}
-var stored=null;try{{stored=localStorage.getItem(KEY);}}catch(e){{}}
-if(!EU.test(tz)||stored==="yes"){{if(stored!=="no")load();return;}}
-if(stored==="no")return;
-document.addEventListener("DOMContentLoaded",function(){{
-var b=document.createElement("div");b.className="consent";b.setAttribute("role","dialog");
-b.setAttribute("aria-label","Visitor identification consent");
-b.innerHTML='<p>This site can identify visiting organisations so business enquiries can be followed up. It is not advertising. <a href="/privacy/">How it works</a>.</p><div class="consent-actions"><button type="button" data-consent="no">Decline</button><button type="button" data-consent="yes" class="consent-yes">Allow</button></div>';
-b.addEventListener("click",function(e){{var t=e.target.closest("[data-consent]");if(!t)return;
-try{{localStorage.setItem(KEY,t.dataset.consent);}}catch(err){{}}
-if(t.dataset.consent==="yes")load();b.remove();}});
-document.body.appendChild(b);}});
-}})();</script>'''
+VISITOR_TAG = (f'<meta name="vtag-src" content="{VISITOR_TAG_SRC}">'
+               f'<meta name="vtag-pid" content="{VISITOR_TAG_PID}">'
+               f'<meta name="vtag-version" content="{VISITOR_TAG_VERSION}">')
 
 SOCIALS = {
     "LinkedIn": "https://www.linkedin.com/in/kunaal-naik/",

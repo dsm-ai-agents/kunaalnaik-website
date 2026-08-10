@@ -51,20 +51,32 @@ def main():
     assert "minimum engagement" in contact.lower(), "engagement floor missing from /contact/"
     assert "Not a fit" in contact, "'Not a fit' exclusion list missing from /contact/"
 
-    # --- visitor tag: gated loader on every page, and disclosed on /privacy/ ---
-    # The tag is injected by JS after a region/consent check, so assert on the
-    # loader + its config rather than a literal <script id="vtag-ai-js"> tag.
+    # --- visitor tag: config on every page, gate in an EXTERNAL file ---
+    # An inline gate is silently blocked by the CSP in vercel.json
+    # (script-src 'self', no 'unsafe-inline'), so the tag would never load.
     pages = list(ROOT.glob("*.html")) + list(ROOT.glob("*/index.html")) + list(ROOT.glob("*/*/index.html"))
-    for needle in ("r2.leadsy.ai/tag.js", "vtag-consent", "vtag-ai-js"):
+    for needle in ('name="vtag-src"', 'name="vtag-pid"'):
         missing = [str(p.relative_to(ROOT)) for p in pages
                    if needle not in p.read_text(encoding="utf-8")]
         assert not missing, f"{needle!r} missing from: {missing}"
 
     home = (ROOT / "index.html").read_text(encoding="utf-8")
-    # EU visitors must NOT get an unconditional load: a bare src= tag would bypass the gate.
+    assert "r2.leadsy.ai/tag.js" in home, "tag source missing from page config"
+    # the gate must NOT be inline
+    assert "localStorage.getItem" not in home, \
+        "consent gate is inline; CSP script-src 'self' will block it silently"
     assert '<script id="vtag-ai-js" async src=' not in home, "unconditional tag bypasses consent gate"
-    assert "Europe" in home, "EU region test missing from gate"
-    assert 'localStorage.getItem(KEY)' in home or "localStorage.getItem" in home, "consent not persisted"
+
+    site_js = (ROOT / "assets/site.js").read_text(encoding="utf-8")
+    for needle in ("vtag-consent", "Europe", "vtag-ai-js", "localStorage"):
+        assert needle in site_js, f"gate logic missing {needle!r} from assets/site.js"
+
+    # CSP must permit the external tag domain, or the gate loads a blocked script
+    csp = json.loads((ROOT / "vercel.json").read_text(encoding="utf-8"))
+    header = next(h["value"] for block in csp["headers"] for h in block["headers"]
+                  if h["key"] == "Content-Security-Policy")
+    assert "r2.leadsy.ai" in header, "CSP does not allow the visitor-tag domain"
+    assert "'unsafe-inline'" not in header, "CSP weakened to unsafe-inline; fix the script instead"
 
     privacy = (ROOT / "privacy/index.html").read_text(encoding="utf-8")
     assert "leadsy" in privacy.lower(), "visitor tag runs but /privacy/ does not disclose it"
@@ -73,7 +85,7 @@ def main():
     assert "consent" in privacy.lower(), "/privacy/ does not mention the consent gate"
 
     print(f"PASS: {len(same_as)} sameAs links, {len(questions)} FAQs in schema + visible, "
-          f"engagement floor present, consent-gated visitor tag on {len(pages)} pages + disclosed")
+          f"engagement floor present, external CSP-safe visitor tag on {len(pages)} pages + disclosed")
 
 
 if __name__ == "__main__":

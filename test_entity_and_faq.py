@@ -51,19 +51,29 @@ def main():
     assert "minimum engagement" in contact.lower(), "engagement floor missing from /contact/"
     assert "Not a fit" in contact, "'Not a fit' exclusion list missing from /contact/"
 
-    # --- visitor tag: present on every page, and disclosed on /privacy/ ---
-    tag = 'id="vtag-ai-js"'
+    # --- visitor tag: gated loader on every page, and disclosed on /privacy/ ---
+    # The tag is injected by JS after a region/consent check, so assert on the
+    # loader + its config rather than a literal <script id="vtag-ai-js"> tag.
     pages = list(ROOT.glob("*.html")) + list(ROOT.glob("*/index.html")) + list(ROOT.glob("*/*/index.html"))
-    missing = [str(p.relative_to(ROOT)) for p in pages if tag not in p.read_text(encoding="utf-8")]
-    assert not missing, f"visitor tag missing from: {missing}"
+    for needle in ("r2.leadsy.ai/tag.js", "vtag-consent", "vtag-ai-js"):
+        missing = [str(p.relative_to(ROOT)) for p in pages
+                   if needle not in p.read_text(encoding="utf-8")]
+        assert not missing, f"{needle!r} missing from: {missing}"
+
+    home = (ROOT / "index.html").read_text(encoding="utf-8")
+    # EU visitors must NOT get an unconditional load: a bare src= tag would bypass the gate.
+    assert '<script id="vtag-ai-js" async src=' not in home, "unconditional tag bypasses consent gate"
+    assert "Europe" in home, "EU region test missing from gate"
+    assert 'localStorage.getItem(KEY)' in home or "localStorage.getItem" in home, "consent not persisted"
 
     privacy = (ROOT / "privacy/index.html").read_text(encoding="utf-8")
     assert "leadsy" in privacy.lower(), "visitor tag runs but /privacy/ does not disclose it"
     assert "Visitor identification" in privacy, "/privacy/ missing visitor-identification section"
     assert "advertising pixel, or newsletter" not in privacy, "/privacy/ still claims no pixel"
+    assert "consent" in privacy.lower(), "/privacy/ does not mention the consent gate"
 
     print(f"PASS: {len(same_as)} sameAs links, {len(questions)} FAQs in schema + visible, "
-          f"engagement floor present, visitor tag on {len(pages)} pages + disclosed")
+          f"engagement floor present, consent-gated visitor tag on {len(pages)} pages + disclosed")
 
 
 if __name__ == "__main__":

@@ -51,8 +51,19 @@ def main():
     assert "minimum engagement" in contact.lower(), "engagement floor missing from /contact/"
     assert "Not a fit" in contact, "'Not a fit' exclusion list missing from /contact/"
 
+    # --- visitor tag: present on every page, and disclosed on /privacy/ ---
+    tag = 'id="vtag-ai-js"'
+    pages = list(ROOT.glob("*.html")) + list(ROOT.glob("*/index.html")) + list(ROOT.glob("*/*/index.html"))
+    missing = [str(p.relative_to(ROOT)) for p in pages if tag not in p.read_text(encoding="utf-8")]
+    assert not missing, f"visitor tag missing from: {missing}"
+
+    privacy = (ROOT / "privacy/index.html").read_text(encoding="utf-8")
+    assert "leadsy" in privacy.lower(), "visitor tag runs but /privacy/ does not disclose it"
+    assert "Visitor identification" in privacy, "/privacy/ missing visitor-identification section"
+    assert "advertising pixel, or newsletter" not in privacy, "/privacy/ still claims no pixel"
+
     print(f"PASS: {len(same_as)} sameAs links, {len(questions)} FAQs in schema + visible, "
-          "engagement floor present")
+          f"engagement floor present, visitor tag on {len(pages)} pages + disclosed")
 
 
 if __name__ == "__main__":

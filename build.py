@@ -4,6 +4,8 @@ from pathlib import Path
 import html
 import json
 
+from pages_structural import STRUCTURAL
+
 ROOT = Path(__file__).parent
 SITE = "https://kunaalnaik.com"
 EMAIL = "me@kunaalnaik.com"
@@ -66,8 +68,10 @@ def footer():
     social = "".join(f'<a href="{url}" target="_blank" rel="me noopener">{name}</a>' for name, url in SOCIALS.items())
     return f'''<footer class="footer"><div class="footer-inner"><div class="footer-grid">
 <div><h2>Turn AI ambition into operating capability.</h2><p>Training and implementation support for leaders, teams, professionals, founders, SMBs, and MSMEs.</p><div class="socials">{social}</div></div>
-<div><h3>Work with Kunaal</h3><div class="footer-links"><a href="/corporate-ai-training/">Corporate AI training</a><a href="/ai-automation-consulting/">AI workflow consulting</a><a href="/speaking-and-workshops/">Speaking & workshops</a><a href="/contact/">Contact</a></div></div>
-<div><h3>Explore</h3><div class="footer-links"><a href="/about-kunaal-naik/">About Kunaal</a><a href="/case-studies/">Case studies</a><a href="/insights/">Insights</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div></div>
+<div><h3>Work with Kunaal</h3><div class="footer-links"><a href="/corporate-ai-training/">Corporate AI training</a><a href="/ai-automation-consulting/">AI workflow consulting</a><a href="/ai-training-for-executive-teams/">Executive AI training</a><a href="/global-ai-training-delivery/">Global delivery</a><a href="/speaking-and-workshops/">Speaking & workshops</a><a href="/contact/">Contact</a></div></div>
+<div><h3>By function</h3><div class="footer-links"><a href="/ai-training-for-finance-teams/">Finance</a><a href="/ai-training-for-hr-and-l-and-d/">HR & L&D</a><a href="/ai-training-for-legal-teams/">Legal</a><a href="/ai-training-for-operations/">Operations</a><a href="/ai-training-for-sales-teams/">Sales</a><a href="/ai-training-for-marketing-teams/">Marketing</a><a href="/ai-training-for-engineering-teams/">Engineering</a></div></div>
+<div><h3>Agents</h3><div class="footer-links"><a href="/claude-cowork-training/">Claude Cowork</a><a href="/hermes-agent-training/">Hermes Agent</a><a href="/hermes-agent-for-consultants/">For consultants</a><a href="/hermes-agent-for-executives/">For executives</a><a href="/hermes-agent-for-founders/">For founders</a><a href="/ai-agent-governance-and-guardrails/">Agent governance</a><a href="/when-not-to-use-an-ai-agent/">When not to use one</a></div></div>
+<div><h3>Before you buy</h3><div class="footer-links"><a href="/corporate-ai-training-cost-india/">Training cost</a><a href="/how-to-choose-a-corporate-ai-trainer/">Choosing a trainer</a><a href="/corporate-ai-training-rfp-template/">RFP template</a><a href="/ai-training-roi-measurement/">Measuring ROI</a><a href="/about-kunaal-naik/">About</a><a href="/case-studies/">Case studies</a><a href="/insights/">Insights</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div></div>
 </div><div class="footer-bottom"><span>© 2026 Kunaal Naik</span><span><a href="mailto:{EMAIL}">{EMAIL}</a></span></div></div></footer>'''
 
 
@@ -194,10 +198,18 @@ SERVICES = {
 }
 
 
+def related_section(related):
+    """Hub-and-spoke internal links. Prevents these pages being orphans."""
+    links = "".join(f'<a href="{url}">{esc(label)}</a>' for label, url in related)
+    return f'''<section class="section section-tight section-white"><div class="section-inner"><p class="eyebrow">Related</p><div class="footer-links">{links}</div></div></section>'''
+
+
 def service_body(item):
     outcomes = "".join(f"<li>{esc(x)}</li>" for x in item["outcomes"])
     formats = "".join(f"<li>{esc(x)}</li>" for x in item["formats"])
-    return f'''{page_hero(item['kicker'], item['h1'], item['lede'], item['kicker'])}<section class="section"><div class="section-inner content-grid"><article class="prose"><h2>The problem this solves</h2><p>{item['problem']}</p><h2>What the engagement should produce</h2><ul>{outcomes}</ul><h2>Ways to work together</h2><ul>{formats}</ul><h2>Who it is for</h2><p>{item['fit']}</p><blockquote>No black-box transformation. The goal is internal capability, explicit ownership, and evidence that the workflow improved the work.</blockquote><h2>How scope is decided</h2><p>Send the audience, workflow or business priority, current tools, constraints, and desired outcome. The first response will identify the smallest useful starting point and any missing information—not force a standard package.</p></article>{sidebar('Email-first scoping', 'Describe the team, priority, and desired outcome. No booking funnel or generic sales deck.', item['subject'])}</div></section>{cta('Bring one real workflow.', 'The best first conversation starts with work that is repetitive, consequential, measurable, or difficult to scale.', item['subject'])}'''
+    extra = related_section(item["related"]) if item.get("related") else ""
+    faqs = faq_section(item["faqs"]) if item.get("faqs") else ""
+    return f'''{page_hero(item['kicker'], item['h1'], item['lede'], item['kicker'])}<section class="section"><div class="section-inner content-grid"><article class="prose"><h2>The problem this solves</h2><p>{item['problem']}</p><h2>What the engagement should produce</h2><ul>{outcomes}</ul><h2>Ways to work together</h2><ul>{formats}</ul><h2>Who it is for</h2><p>{item['fit']}</p><blockquote>No black-box transformation. The goal is internal capability, explicit ownership, and evidence that the workflow improved the work.</blockquote><h2>How scope is decided</h2><p>Send the audience, workflow or business priority, current tools, constraints, and desired outcome. The first response will identify the smallest useful starting point and any missing information—not force a standard package.</p></article>{sidebar('Email-first scoping', 'Describe the team, priority, and desired outcome. No booking funnel or generic sales deck.', item['subject'])}</div></section>{faqs}{extra}{cta('Bring one real workflow.', 'The best first conversation starts with work that is repetitive, consequential, measurable, or difficult to scale.', item['subject'])}'''
 
 about = f'''{page_hero('About Kunaal Naik', 'Making advanced AI <em>useful in everyday work.</em>', 'Kunaal Naik is the founder of Data Science Masterminds, a corporate AI trainer, practical AI adoption consultant, AI automation coach, and TEDx speaker.', 'About')}<section class="section"><div class="section-inner content-grid"><article class="prose"><h2>The bridge between knowing and doing</h2><p>Kunaal works at the intersection of data, learning, business operations, automation, and entrepreneurship. The through-line is helping people understand complex capability, connect it to meaningful work, and build enough confidence and discipline to use it repeatedly.</p><p>His focus is not a particular tool. It is the operating system around useful AI: the people, business context, data, instructions, approval boundaries, reusable procedures, and measurement that turn an experiment into a working capability.</p><h2>Vision and mission</h2><p><strong>Vision:</strong> make AI accessible, practical, and useful for professionals, founders, and business teams regardless of technical background.</p><p><strong>Mission:</strong> train and equip people to understand, build, supervise, and improve AI workflows that solve real business problems.</p><h2>How Kunaal works</h2><ul><li><strong>Business problem before technology:</strong> understand the work, decision, customer, data, and metric before choosing AI, automation, or code.</li><li><strong>Practical over perfect:</strong> build the smallest version that can expose value, risk, and missing information.</li><li><strong>Build, do not merely consume:</strong> leave with an artifact, workflow, decision, or implementation plan—not only notes.</li><li><strong>Accessibility without carelessness:</strong> make complex ideas understandable while preserving verification and governance.</li><li><strong>Human accountability:</strong> keep sensitive data, consequential decisions, approvals, and published outcomes under human judgment.</li><li><strong>Capability transfer:</strong> document the method, train the owner, and avoid permanent black-box dependency.</li></ul><h2>Who he helps</h2><p>Kunaal works with enterprise leaders and teams seeking governed adoption; SMBs and MSMEs choosing their first valuable workflow; professionals building an AI workflow portfolio; and founders using agents for operations or developing an ethical service around a proven business problem.</p><h2>Tools are a means, not the offer</h2><p>Claude Cowork and Hermes Agent make multi-step, agentic work tangible. Kunaal also works with AI agents, no-code and low-code automation, n8n, data workflows, and the surrounding practices required for responsible adoption.</p><h2>Public profiles</h2><ul><li><a href="https://www.linkedin.com/in/kunaal-naik/">LinkedIn</a></li><li><a href="https://www.youtube.com/KunaalNaik">YouTube</a></li><li><a href="https://www.instagram.com/coachkunaal/">Instagram</a></li><li><a href="https://www.youtube.com/watch?v=JTNNR9uvKPo">TEDxBBAU: The Invisible Work Behind Visible Luck</a></li><li><a href="https://datasciencemasterminds.com/">Data Science Masterminds</a></li></ul></article>{sidebar('Direct practitioner access', 'Kunaal personally leads discovery, facilitation, and workflow design for scoped engagements.', 'Work with Kunaal')}</div></section>{cta('What capability should your team build?', 'Share the audience, work, friction, and desired outcome. The first response will identify the smallest useful starting point.', 'Work with Kunaal')}'''
 
@@ -245,6 +257,12 @@ PAGES = {
 
 for slug, item in SERVICES.items():
     PAGES[f"{slug}/index.html"] = (item["title"], item["description"], f"/{slug}/", service_body(item), "Service")
+
+# The 23 structural pages (competitor teardown, axes 1-4). Same renderer, same
+# schema path — FAQs flow into FAQPage markup via page()'s faqs kwarg.
+for slug, item in STRUCTURAL.items():
+    PAGES[f"{slug}/index.html"] = (item["title"], item["description"], f"/{slug}/",
+                                   service_body(item), "Service", item.get("faqs"))
 
 for filename, entry in PAGES.items():
     title, description, path, body, kind = entry[:5]

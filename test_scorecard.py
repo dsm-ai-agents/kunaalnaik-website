@@ -102,8 +102,30 @@ def main():
     m = re.search(r'id="sc-phone"[^>]*>', html)
     assert m and "required" not in m.group(0), "phone must never be required"
 
+    # 6. VISIBILITY: a lead tool nobody can find is worthless. It must be
+    #    promoted in visible body content, not only buried in a nav dropdown.
+    home = (ROOT / "index.html").read_text(encoding="utf-8")
+    assert "sc-promo" in home, "homepage has no visible scorecard prompt"
+    assert "/ai-readiness-scorecard/" in home, "homepage missing scorecard link"
+    assert "scorecard" in home.lower(), "homepage never mentions the scorecard"
+
+    contact = (ROOT / "contact/index.html").read_text(encoding="utf-8")
+    assert "sc-promo" in contact, "contact page has no scorecard prompt"
+
+    # every service page sidebar must offer it
+    service_pages = [p for p in ROOT.glob("*/index.html")
+                     if 'class="sidebar"' in p.read_text(encoding="utf-8")]
+    assert len(service_pages) >= 20, f"expected 20+ sidebar pages, found {len(service_pages)}"
+    for p in service_pages:
+        h = p.read_text(encoding="utf-8")
+        assert "sc-side" in h, f"{p.parent.name}: sidebar missing scorecard panel"
+
+    # the scorecard page must not promote itself
+    assert "sc-promo" not in html, "scorecard page should not link to itself"
+
     print(f"PASS: embedded content matches source, JS and Python scorers agree on "
-          f"{len(cases)} answer sets, score ungated, phone optional")
+          f"{len(cases)} answer sets, score ungated, phone optional, promoted on home "
+          f"+ contact + {len(service_pages)} sidebars")
 
 
 def _node():

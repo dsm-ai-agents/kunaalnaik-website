@@ -5,6 +5,7 @@ import html
 import json
 
 from pages_structural import STRUCTURAL
+import scorecard_page
 
 ROOT = Path(__file__).parent
 SITE = "https://kunaalnaik.com"
@@ -104,6 +105,7 @@ NAV = [
         ("Hermes for founders", "/hermes-agent-for-founders/", "The first workflows worth it"),
     ]),
     ("Before you buy", None, [
+        ("AI readiness scorecard", "/ai-readiness-scorecard/", "Free, 3 minutes, no email for the score"),
         ("What it costs", "/corporate-ai-training-cost-india/", "The six drivers of the fee"),
         ("Choosing a trainer", "/how-to-choose-a-corporate-ai-trainer/", "Criteria, and red flags"),
         ("RFP template", "/corporate-ai-training-rfp-template/", "Free, ungated, provider-neutral"),
@@ -345,6 +347,12 @@ for slug, item in SERVICES.items():
 for slug, item in STRUCTURAL.items():
     PAGES[f"{slug}/index.html"] = (item["title"], item["description"], f"/{slug}/",
                                    service_body(item), "Service", item.get("faqs"))
+
+# Lead tool. Content and scoring live in scorecard_content.py; the page passes
+# build.py's own helpers in so scorecard_page.py stays import-cycle free.
+PAGES[f"{scorecard_page.SLUG}/index.html"] = (
+    scorecard_page.TITLE, scorecard_page.DESCRIPTION, f"/{scorecard_page.SLUG}/",
+    scorecard_page.body(page_hero, faq_section, esc), "WebPage", scorecard_page.FAQS)
 
 for filename, entry in PAGES.items():
     title, description, path, body, kind = entry[:5]

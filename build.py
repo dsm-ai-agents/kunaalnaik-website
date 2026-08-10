@@ -70,12 +70,46 @@ PERSON = {
     "founder": {"@type": "Organization", "name": "Data Science Masterminds", "url": "https://datasciencemasterminds.com/"},
 }
 
+# Primary nav. Grouped by how a buyer actually shops: what they need, who they
+# are, what they're evaluating. A flat list cannot carry 37 pages.
+# (label, url) = plain link. (label, None, [(label,url,blurb)...]) = dropdown.
 NAV = [
-    ("Training", "/corporate-ai-training/"),
-    ("Consulting", "/ai-automation-consulting/"),
-    ("Claude Cowork", "/claude-cowork-training/"),
-    ("Hermes Agent", "/hermes-agent-training/"),
-    ("Case Studies", "/case-studies/"),
+    ("Training", None, [
+        ("Corporate AI training", "/corporate-ai-training/", "The core role-based programme"),
+        ("Executive & leadership", "/ai-training-for-executive-teams/", "Portfolio, governance, investment"),
+        ("Finance", "/ai-training-for-finance-teams/", "Variance commentary, audit-safe"),
+        ("HR & L&D", "/ai-training-for-hr-and-l-and-d/", "Job specs, competencies, onboarding"),
+        ("Legal", "/ai-training-for-legal-teams/", "Clause comparison, privilege"),
+        ("Operations", "/ai-training-for-operations/", "SOPs, incidents, exceptions"),
+        ("Sales", "/ai-training-for-sales-teams/", "Research, preparation, follow-up"),
+        ("Marketing", "/ai-training-for-marketing-teams/", "Planning, brand voice, QC"),
+        ("Engineering", "/ai-training-for-engineering-teams/", "Beyond coding assistants"),
+        ("Global delivery", "/global-ai-training-delivery/", "Timezones, onsite, contracting"),
+    ]),
+    ("Consulting", None, [
+        ("AI workflow consulting", "/ai-automation-consulting/", "Audit, pilot, implement, hand over"),
+        ("Agent governance", "/ai-agent-governance-and-guardrails/", "Permissions, approvals, audit trails"),
+        ("When not to use an agent", "/when-not-to-use-an-ai-agent/", "Honest selection, shorter list"),
+        ("Agentic vs generative AI", "/agentic-ai-vs-generative-ai-for-business/", "What changes when AI acts"),
+    ]),
+    ("Claude & Hermes", None, [
+        ("Claude Cowork training", "/claude-cowork-training/", "Team enablement and governance"),
+        ("Cowork for finance", "/claude-cowork-for-finance/", "Reporting, traceable to source"),
+        ("Cowork for legal", "/claude-cowork-for-legal/", "Long documents, citations"),
+        ("Cowork for marketing", "/claude-cowork-for-marketing/", "Campaigns, on brand"),
+        ("Cowork for operations", "/claude-cowork-for-operations/", "SOPs, exceptions included"),
+        ("Hermes Agent training", "/hermes-agent-training/", "Memory, skills, tools, schedules"),
+        ("Hermes for consultants", "/hermes-agent-for-consultants/", "Per-client context, separated"),
+        ("Hermes for executives", "/hermes-agent-for-executives/", "Briefings on a schedule"),
+        ("Hermes for founders", "/hermes-agent-for-founders/", "The first workflows worth it"),
+    ]),
+    ("Before you buy", None, [
+        ("What it costs", "/corporate-ai-training-cost-india/", "The six drivers of the fee"),
+        ("Choosing a trainer", "/how-to-choose-a-corporate-ai-trainer/", "Criteria, and red flags"),
+        ("RFP template", "/corporate-ai-training-rfp-template/", "Free, ungated, provider-neutral"),
+        ("Measuring ROI", "/ai-training-roi-measurement/", "Baselines before delivery"),
+        ("Case studies", "/case-studies/", "Inspectable proof"),
+    ]),
     ("About", "/about-kunaal-naik/"),
 ]
 
@@ -89,7 +123,21 @@ def mailto(subject):
 
 
 def header():
-    links = "".join(f'<a href="{url}">{label}</a>' for label, url in NAV)
+    # <details> gives open/close, keyboard support, and Esc for free — no JS.
+    parts = []
+    for entry in NAV:
+        if entry[1] is not None:
+            parts.append(f'<a href="{entry[1]}">{esc(entry[0])}</a>')
+            continue
+        label, _, children = entry
+        items = "".join(
+            f'<a href="{url}"><strong>{esc(text)}</strong><span>{esc(blurb)}</span></a>'
+            for text, url, blurb in children)
+        cols = " menu-wide" if len(children) > 5 else ""
+        parts.append(
+            f'<details class="menu"><summary>{esc(label)}</summary>'
+            f'<div class="menu-panel{cols}">{items}</div></details>')
+    links = "".join(parts)
     return f'''<a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header"><nav class="nav" aria-label="Primary navigation">
 <a class="brand" href="/">Kunaal<span>.</span>Naik</a>

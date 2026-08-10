@@ -12,7 +12,15 @@ SOCIALS = {
     "LinkedIn": "https://www.linkedin.com/in/kunaal-naik/",
     "YouTube": "https://www.youtube.com/KunaalNaik",
     "Instagram": "https://www.instagram.com/coachkunaal/",
+    "GitHub": "https://github.com/KunaalNaik",
 }
+
+# Entity corroboration for Google and LLM citation. Verified reachable 2026-08-10.
+# Only add a URL here after confirming it is Kunaal's own profile.
+SAME_AS = list(SOCIALS.values()) + ["https://datasciencemasterminds.com/"]
+
+# Minimum engagement, stated publicly to filter low-ticket enquiries.
+ENGAGEMENT_FLOOR = "Engagements start at a one-day executive briefing or a two-week workflow sprint. Kunaal does not take one-off hourly tool demos."
 
 PERSON = {
     "@type": "Person",
@@ -22,7 +30,7 @@ PERSON = {
     "image": f"{SITE}/assets/kunaal-naik.webp",
     "jobTitle": "Corporate AI Trainer and AI Workflow Consultant",
     "description": "Kunaal Naik helps professionals, business owners, and teams turn AI tools into practical, governed workflows.",
-    "sameAs": list(SOCIALS.values()),
+    "sameAs": SAME_AS,
     "founder": {"@type": "Organization", "name": "Data Science Masterminds", "url": "https://datasciencemasterminds.com/"},
 }
 
@@ -63,7 +71,7 @@ def footer():
 </div><div class="footer-bottom"><span>© 2026 Kunaal Naik</span><span><a href="mailto:{EMAIL}">{EMAIL}</a></span></div></div></footer>'''
 
 
-def schemas(kind, title, description, path):
+def schemas(kind, title, description, path, faqs=None):
     url = SITE + path
     webpage = {"@type": "WebPage", "@id": url + "#webpage", "url": url, "name": title, "description": description, "isPartOf": {"@id": SITE + "/#website"}, "about": {"@id": PERSON["@id"]}}
     items = [{"@type": "WebSite", "@id": SITE + "/#website", "url": SITE + "/", "name": "Kunaal Naik"}, PERSON, webpage]
@@ -71,12 +79,23 @@ def schemas(kind, title, description, path):
         webpage["@type"] = "ProfilePage"; webpage["mainEntity"] = {"@id": PERSON["@id"]}
     elif kind == "Service":
         items.append({"@type": "Service", "name": title.split(" | ")[0], "description": description, "url": url, "provider": {"@id": PERSON["@id"]}, "areaServed": ["India", "Worldwide"]})
+    if faqs:
+        items.append({"@type": "FAQPage", "@id": url + "#faq", "mainEntity": [
+            {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]})
     return {"@context": "https://schema.org", "@graph": items}
 
 
-def page(title, description, path, body, kind="WebPage"):
+def faq_section(faqs):
+    """Visible FAQ markup. Must stay in sync with FAQPage schema — same q/a source."""
+    rows = "".join(
+        f'<details class="faq-item"><summary>{esc(q)}</summary><p>{esc(a)}</p></details>'
+        for q, a in faqs)
+    return f'''<section class="section"><div class="section-inner"><div class="section-head"><div><p class="eyebrow">Common questions</p><h2>Before you enquire.</h2></div></div><div class="faq-list">{rows}</div></div></section>'''
+
+
+def page(title, description, path, body, kind="WebPage", faqs=None):
     canonical = SITE + path
-    data = json.dumps(schemas(kind, title, description, path), ensure_ascii=False, separators=(",", ":"))
+    data = json.dumps(schemas(kind, title, description, path, faqs), ensure_ascii=False, separators=(",", ":"))
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title><meta name="description" content="{esc(description)}"><link rel="canonical" href="{canonical}">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Kunaal Naik"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(description)}"><meta property="og:url" content="{canonical}"><meta property="og:image" content="{SITE}/assets/og-kunaal-naik.jpg">
@@ -96,7 +115,7 @@ def sidebar(label, text, subject):
     return f'''<aside class="sidebar"><div class="panel panel-accent"><span class="tag">{label}</span><h3>Start with the outcome.</h3><p>{text}</p><a class="button" href="{mailto(subject)}">Email Kunaal</a></div></aside>'''
 
 
-home = f'''<section class="hero"><div class="hero-grid"><div class="hero-copy"><p class="eyebrow">Corporate AI training · Workflow consulting</p><h1>Move from AI experiments to <em>working systems.</em></h1><p class="lede">Kunaal Naik helps leaders, teams, SMBs, and MSMEs identify one valuable workflow, train the people doing the work, implement the right AI approach, and measure whether it improved.</p><div class="hero-actions"><a class="button button-primary" href="{mailto('AI training or consulting enquiry')}">Discuss your AI priority</a><a class="button button-light" href="/corporate-ai-training/">Explore training</a></div><div class="proof-strip"><div><strong>Trainer + implementer</strong><span>Capability, not tool theatre</span></div><div><strong>Enterprise-aware</strong><span>Governance and approval gates</span></div><div><strong>SMB/MSME-ready</strong><span>Focused first workflows</span></div></div></div><div class="hero-portrait"><div class="portrait-frame"><img src="/assets/kunaal-naik.webp" width="719" height="720" alt="Kunaal Naik, corporate AI trainer and consultant"></div><div class="portrait-note">Founder · Data Science Masterminds<br>TEDx speaker</div></div></div></section>
+home = f'''<section class="hero"><div class="hero-grid"><div class="hero-copy"><p class="eyebrow">Corporate AI training · Workflow consulting</p><h1>Move from AI experiments to <em>working systems.</em></h1><p class="lede">Kunaal Naik helps leaders, teams, SMBs, and MSMEs identify one valuable workflow, train the people doing the work, implement the right AI approach, and measure whether it improved.</p><div class="hero-actions"><a class="button button-primary" href="{mailto('AI training or consulting enquiry')}">Discuss your AI priority</a><a class="button button-light" href="/corporate-ai-training/">Explore training</a></div><div class="proof-strip"><div><strong>Trainer + implementer</strong><span>Capability, not tool theatre</span></div><div><strong>Enterprise-aware</strong><span>Governance and approval gates</span></div><div><strong>Global delivery</strong><span>Onsite, remote, and hybrid</span></div></div></div><div class="hero-portrait"><div class="portrait-frame"><img src="/assets/kunaal-naik.webp" width="719" height="720" alt="Kunaal Naik, corporate AI trainer and consultant"></div><div class="portrait-note">Founder · Data Science Masterminds<br>TEDx speaker</div></div></div></section>
 <section class="section section-white"><div class="section-inner"><div class="section-head"><div><p class="eyebrow">Where Kunaal helps</p><h2>AI enablement for work that matters.</h2></div><p class="section-intro">The offer is deliberately practical: identify a valuable workflow, equip the people closest to it, implement safely, and prove whether it improved the work.</p></div><div class="service-grid">
 <a class="service-card" href="/corporate-ai-training/"><span class="number">01 / TRAIN</span><h3>Corporate AI training</h3><p>Role-based workshops for leaders and functional teams, designed around real work rather than generic demos.</p><span class="arrow">→</span></a>
 <a class="service-card" href="/ai-automation-consulting/"><span class="number">02 / IMPLEMENT</span><h3>AI workflow consulting</h3><p>A focused path from workflow inventory to a governed pilot and internal operating capability.</p><span class="arrow">→</span></a>
@@ -190,7 +209,20 @@ gcc_case = f'''{page_hero('GCC consulting firm · Training case study', 'From bu
 
 insights = f'''{page_hero('Insights', 'Original operating notes—not <em>AI content volume.</em>', 'A focused library on AI fluency, enterprise adoption, Claude Cowork, Hermes Agent, workflow design, verification, and measurable business use.', 'Insights')}<section class="section"><div class="section-inner"><div class="section-head"><div><p class="eyebrow">Publishing roadmap</p><h2>The first evidence-rich guides.</h2></div><p class="section-intro">The base site establishes the topics. Each article will add screenshots, worked examples, decisions, failures, sources, and reusable artifacts before publication.</p></div><div class="service-grid"><article class="service-card"><span class="number">DECISION GUIDE</span><h3>Claude Cowork vs Hermes Agent</h3><p>Managed knowledge-work agent or persistent customizable operating layer?</p></article><article class="service-card"><span class="number">TRAINING</span><h3>Corporate AI training in India</h3><p>A role-based curriculum for leadership and functional teams.</p></article><article class="service-card"><span class="number">MEASUREMENT</span><h3>How to measure AI workshop ROI</h3><p>Adoption, time, quality, rework, risk, and review burden.</p></article><article class="service-card"><span class="number">CLAUDE COWORK</span><h3>A safe Cowork setup</h3><p>Projects, instructions, connectors, approvals, and verification.</p></article><article class="service-card"><span class="number">HERMES AGENT</span><h3>Weekly market-intelligence agent</h3><p>Workflow, sources, checks, failure modes, and cost.</p></article><article class="service-card"><span class="number">AI FLUENCY</span><h3>The D4–LOOP framework</h3><p>Delegate, describe, discern, and stay diligent through execution.</p></article></div></div></section>{cta('Want a specific guide or internal briefing?', 'Email the business question and intended audience. Useful questions become prioritized research, not generic posts.', 'AI research or briefing request')}'''
 
-contact = f'''{page_hero('Contact', 'Start with the work—not a <em>sales form.</em>', 'Email Kunaal directly about corporate training, AI workflow consulting, Claude Cowork, Hermes Agent, speaking, or partnerships.', 'Contact')}<section class="section"><div class="section-inner split"><div><p class="eyebrow">Email</p><h2><a href="mailto:{EMAIL}">{EMAIL}</a></h2><p class="section-intro">A useful first email includes the audience, business priority or workflow, current tools, constraints, timeline, and what success would look like.</p><a class="button button-primary" href="mailto:{EMAIL}">Open your email app</a></div><div class="panel"><h3>Suggested subject lines</h3><ul class="list-clean"><li>Corporate AI training enquiry</li><li>AI workflow assessment for our business</li><li>Claude Cowork workshop for our team</li><li>Hermes Agent setup and training</li><li>Speaking or partnership enquiry</li></ul><h3>Elsewhere</h3><div class="socials">{''.join(f'<a href="{u}">{n}</a>' for n,u in SOCIALS.items())}</div></div></div></section>'''
+CONTACT_FAQS = [
+    ("What is the minimum engagement?",
+     "Engagements start at a one-day executive briefing or a two-week workflow sprint. Kunaal does not take one-off hourly tool demonstrations or single-session ChatGPT walkthroughs."),
+    ("Who is this for?",
+     "Enterprise L&D and transformation teams, functional leaders with a budget, and owner-led businesses committing to implementation. Work is scoped per organisation, not sold as seats."),
+    ("Do you deliver outside India?",
+     "Yes. Delivery runs onsite, remote, and hybrid across Indian, Gulf, European, UK, and US timezone bands, contracted in INR or USD."),
+    ("Is this training or implementation?",
+     "Both, and that is the point. Training alone rarely changes the work. Engagements pair role-based training with one implemented, governed workflow and a measurement plan."),
+    ("What do we need before starting?",
+     "One valuable workflow worth improving, the people who own it, and an approver for data and tool access. A named business priority matters more than existing AI maturity."),
+]
+
+contact = f'''{page_hero('Contact', 'Start with the work—not a <em>sales form.</em>', 'Email Kunaal directly about corporate AI training, AI workflow consulting, Claude Cowork, Hermes Agent, speaking, or partnerships.', 'Contact')}<section class="section"><div class="section-inner split"><div><p class="eyebrow">Email</p><h2><a href="mailto:{EMAIL}">{EMAIL}</a></h2><p class="section-intro">{ENGAGEMENT_FLOOR}</p><p class="section-intro">So the first reply is useful rather than a discovery call, include these five things:</p><ol class="list-clean"><li><strong>Organisation</strong> and your role</li><li><strong>Team size</strong> and the function involved</li><li><strong>Business priority or workflow</strong> you want improved</li><li><strong>Budget band</strong> and approval status</li><li><strong>Timeline</strong> and what success would look like</li></ol><a class="button button-primary" href="{mailto('Corporate AI training or consulting enquiry')}">Email with these details</a></div><div class="panel"><h3>Suggested subject lines</h3><ul class="list-clean"><li>Corporate AI training enquiry</li><li>AI workflow assessment for our business</li><li>Claude Cowork workshop for our team</li><li>Hermes Agent setup and training</li><li>Speaking or partnership enquiry</li></ul><h3>Not a fit</h3><ul class="list-clean"><li>Hourly tool demonstrations</li><li>Single-session ChatGPT walkthroughs</li><li>Certificate-only programmes</li><li>Unpaid pilots or spec work</li></ul><h3>Elsewhere</h3><div class="socials">{''.join(f'<a href="{u}">{n}</a>' for n,u in SOCIALS.items())}</div></div></div></section>{faq_section(CONTACT_FAQS)}'''
 
 privacy = f'''{page_hero('Privacy', 'A simple site with a <em>small data footprint.</em>', 'This base website does not include a contact form, account system, advertising pixel, or newsletter signup.', 'Privacy')}<section class="section"><div class="section-inner"><article class="prose"><h2>Information you choose to send</h2><p>If you email {EMAIL}, your email provider and Kunaal’s email provider process the message and associated metadata. Use email only for information you are comfortable sharing for the purpose of the enquiry.</p><h2>Website hosting</h2><p>The site is hosted on Vercel. Hosting infrastructure may process standard request information such as IP address, user agent, requested URL, and timestamps for security and service operation.</p><h2>Analytics and cookies</h2><p>The base release does not intentionally set analytics or advertising cookies. This policy will be updated before optional analytics or third-party embeds are added.</p><h2>External links</h2><p>Links to LinkedIn, YouTube, Instagram, Data Science Masterminds, and other websites are governed by those services’ own policies.</p><h2>Questions</h2><p>Email <a href="mailto:{EMAIL}">{EMAIL}</a>.</p></article></div></section>'''
 
@@ -205,7 +237,7 @@ PAGES = {
     "case-studies/index.html": ("AI Training and Workflow Case Studies | Kunaal Naik", "Evidence-backed AI training and workflow case studies with context, implementation decisions, limitations and measurable outcomes.", "/case-studies/", cases, "WebPage"),
     "case-studies/gcc-consulting-firm-claude-cowork-training/index.html": ("Claude Cowork Training Case Study | GCC Consulting Firm", "A GCC consulting firm training case study covering document processing, parallel reporting, dashboards, SQL, CLAUDE.md memory, and scheduled AI workflows.", "/case-studies/gcc-consulting-firm-claude-cowork-training/", gcc_case, "WebPage"),
     "insights/index.html": ("AI Adoption, Claude Cowork and Hermes Agent Insights | Kunaal Naik", "Practical guides on AI fluency, corporate adoption, Claude Cowork, Hermes Agent, workflow design, verification and business outcomes.", "/insights/", insights, "WebPage"),
-    "contact/index.html": ("Contact Kunaal Naik | AI Training and Consulting", "Email Kunaal Naik about corporate AI training, workflow consulting, Claude Cowork, Hermes Agent, speaking or partnerships.", "/contact/", contact, "WebPage"),
+    "contact/index.html": ("Contact Kunaal Naik | AI Training and Consulting", "Email Kunaal Naik about corporate AI training, workflow consulting, Claude Cowork, Hermes Agent, speaking or partnerships.", "/contact/", contact, "WebPage", CONTACT_FAQS),
     "privacy/index.html": ("Privacy | Kunaal Naik", "Privacy information for KunaalNaik.com.", "/privacy/", privacy, "WebPage"),
     "terms/index.html": ("Terms | Kunaal Naik", "Website terms for KunaalNaik.com.", "/terms/", terms, "WebPage"),
     "404.html": ("Page Not Found | Kunaal Naik", "The requested page does not exist.", "/404.html", not_found, "WebPage"),
@@ -214,12 +246,14 @@ PAGES = {
 for slug, item in SERVICES.items():
     PAGES[f"{slug}/index.html"] = (item["title"], item["description"], f"/{slug}/", service_body(item), "Service")
 
-for filename, (title, description, path, body, kind) in PAGES.items():
+for filename, entry in PAGES.items():
+    title, description, path, body, kind = entry[:5]
+    faqs = entry[5] if len(entry) > 5 else None
     destination = ROOT / filename
     destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text(page(title, description, path, body, kind), encoding="utf-8")
+    destination.write_text(page(title, description, path, body, kind, faqs), encoding="utf-8")
 
-public_paths = sorted(path for filename, (_, _, path, _, _) in PAGES.items() if filename != "404.html")
+public_paths = sorted(path for filename, entry in PAGES.items() if filename != "404.html" for path in [entry[2]])
 sitemap = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
 for path in public_paths:
     sitemap.append(f"  <url><loc>{SITE}{path}</loc><lastmod>2026-08-08</lastmod></url>")

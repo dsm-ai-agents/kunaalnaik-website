@@ -1,7 +1,32 @@
 {
   "trailingSlash": true,
-  "redirects": [],
+  "redirects": [
+    { "source": "/about", "destination": "/about-kunaal-naik/", "permanent": true },
+    { "source": "/about/", "destination": "/about-kunaal-naik/", "permanent": true },
+    { "source": "/training", "destination": "/corporate-ai-training/", "permanent": true },
+    { "source": "/training/", "destination": "/corporate-ai-training/", "permanent": true },
+    { "source": "/consulting", "destination": "/ai-automation-consulting/", "permanent": true },
+    { "source": "/consulting/", "destination": "/ai-automation-consulting/", "permanent": true },
+    { "source": "/scorecard", "destination": "/ai-readiness-scorecard/", "permanent": true },
+    { "source": "/scorecard/", "destination": "/ai-readiness-scorecard/", "permanent": true },
+    { "source": "/blog", "destination": "/insights/", "permanent": true },
+    { "source": "/blog/", "destination": "/insights/", "permanent": true },
+    { "source": "/posts", "destination": "/insights/", "permanent": true },
+    { "source": "/posts/", "destination": "/insights/", "permanent": true },
+    { "source": "/articles", "destination": "/insights/", "permanent": true },
+    { "source": "/articles/", "destination": "/insights/", "permanent": true },
+    { "source": "/speaking", "destination": "/speaking-and-workshops/", "permanent": true },
+    { "source": "/speaking/", "destination": "/speaking-and-workshops/", "permanent": true },
+    { "source": "/index.html", "destination": "/", "permanent": true },
+    { "source": "/favicon.ico", "destination": "/assets/favicon.svg", "permanent": true }
+  ],
   "headers": [
+    {
+      "source": "/404.html",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex" }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [
